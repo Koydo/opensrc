@@ -2,6 +2,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 import { allDocsPages } from "./docs-navigation";
 import { mdxToCleanMarkdown } from "./mdx-to-markdown";
+import { stripMarkdown } from "./strip-markdown";
 
 export type IndexEntry = {
   title: string;
@@ -10,18 +11,6 @@ export type IndexEntry = {
 };
 
 let cached: IndexEntry[] | null = null;
-
-function stripMarkdown(md: string): string {
-  return md
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/`[^`]+`/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/^#{1,6}\s+/gm, "")
-    .replace(/\*{1,3}([^*]+)\*{1,3}/g, "$1")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
 
 function mdxFileForSlug(slug: string): string {
   const docsRoot = join(process.cwd(), "src", "app");
