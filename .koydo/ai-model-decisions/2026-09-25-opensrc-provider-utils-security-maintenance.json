@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-09-25-opensrc-provider-utils-security-maintenance",
+  "date": "2026-09-25",
+  "repo": "Koydo/opensrc",
+  "changeType": "governance",
+  "registryVersion": "1.0.34",
+  "summary": "Patch the AI SDK response-handler resource-exhaustion advisory without changing any provider, model or route selection.",
+  "changedFiles": [
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "surfaceIds": [],
+  "taskTypes": [],
+  "evidenceSources": [
+    "https://github.com/advisories/GHSA-866g-f22w-33x8",
+    "Exact Koydo/opensrc package manifests and pnpm lock graph before and after the security candidate",
+    "Authenticated Koydo/opensrc Dependabot alert 63 readback"
+  ],
+  "locksReviewed": [],
+  "ownerApproval": {
+    "required": false,
+    "approved": false,
+    "source": null
+  },
+  "dependencySecurityMaintenance": {
+    "packageFiles": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ],
+    "packages": [
+      {
+        "name": "@ai-sdk/provider-utils",
+        "advisoryId": "GHSA-866g-f22w-33x8",
+        "vulnerableVersions": [
+          "4.0.23"
+        ],
+        "patchedVersion": "4.0.33",
+        "patchedFloor": "4.0.33",
+        "source": "https://github.com/advisories/GHSA-866g-f22w-33x8"
+      }
+    ],
+    "transitivePackages": [
+      {
+        "name": "@ai-sdk/provider",
+        "beforeVersions": [
+          "3.0.8"
+        ],
+        "afterVersions": [
+          "3.0.8",
+          "3.0.12"
+        ],
+        "requiredBy": [
+          "@ai-sdk/provider-utils"
+        ],
+        "source": "https://www.npmjs.com/package/@ai-sdk/provider/v/3.0.12"
+      },
+      {
+        "name": "eventsource-parser",
+        "beforeVersions": [
+          "3.0.6"
+        ],
+        "afterVersions": [
+          "3.1.1"
+        ],
+        "requiredBy": [
+          "@ai-sdk/provider-utils"
+        ],
+        "source": "https://www.npmjs.com/package/eventsource-parser/v/3.1.1"
+      }
+    ]
+  },
+  "verification": {
+    "commands": [
+      "node --test tests/dependency-security.test.mjs",
+      "pnpm install --lockfile-only --frozen-lockfile --ignore-scripts",
+      "pnpm audit --prod --audit-level low",
+      "pnpm audit --audit-level low",
+      "KOYDO_DESIGN_ROOT=/Users/robertwaltos/.koydo-worktrees/koydo-design-governance-current-20260925 node /Users/robertwaltos/.koydo-worktrees/koydo-design-governance-current-20260925/scripts/ai-model-governance.mjs check --repo . --staged"
+    ],
+    "positiveControls": [
+      "The dependency contract requires the minimum patched provider-utils 4.0.33 and preserves direct ai 6.0.154 and @ai-sdk/react 3.0.156 lock selections.",
+      "The exact before/after lock graph contains the declared provider and eventsource-parser transitive closure."
+    ],
+    "negativeControls": [
+      "The current governance checker rejects a maintenance receipt that omits a changed package-manager file, advisory evidence, the vulnerable version or the patched version.",
+      "This receipt cannot cover runtime source, provider/model adapters, model literals, routing changes or a cross-major provider-utils change."
+    ]
+  },
+  "rollback": "Revert the package manifests, pnpm lock, dependency contract and this receipt; no provider, deployment or runtime configuration state changes are part of this candidate."
+}

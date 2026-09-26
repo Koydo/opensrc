@@ -41,3 +41,26 @@ test("Resolved lock retains the fixed non-AI dependency graph", () => {
 
   assert.doesNotMatch(lockfile, /^  next@15\.5\.15:/m);
 });
+
+test("Provider utility security maintenance preserves direct AI selections", () => {
+  assert.equal(
+    rootPackage.pnpm.overrides[
+      "@ai-sdk/provider-utils"
+    ],
+    "4.0.33",
+  );
+
+  for (const entry of [
+    "@ai-sdk/provider-utils@4.0.33",
+    "@ai-sdk/react@3.0.156",
+    "ai@6.0.154",
+  ]) {
+    assert.match(
+      lockfile,
+      new RegExp(
+        `^  ['"]?${entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}['"]?:`,
+        "m",
+      ),
+    );
+  }
+});
